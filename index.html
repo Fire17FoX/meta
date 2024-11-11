@@ -2,33 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Local GeoJSON Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karnataka GeoJSON Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <style>
-        #map { height: 600px; width: 100%; }
+        /* Basic styling for the map */
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
-    <h1>Local GeoJSON Map</h1>
     <div id="map"></div>
 
+    <!-- Leaflet JS Library -->
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script>
-        // Initialize the map
-        const map = L.map('map').setView([0, 0], 2); // Adjust center and zoom
 
-        // Add a base layer
+    <script>
+        // Initialize the map and set view to a default location
+        const map = L.map('map').setView([15.3173, 75.7139], 7); // Adjust as needed for Karnataka
+
+        // Add a base layer (OpenStreetMap)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Load and add the GeoJSON layer
-        fetch('Karnataka_new.geojson') // Use the exact name of your GeoJSON file
+        // Load and add the GeoJSON data for Karnataka
+        fetch('Karnataka_new.geojson')  // Use the filename exactly as uploaded
             .then(response => response.json())
             .then(data => {
-                L.geoJSON(data).addTo(map);
+                // Add the GeoJSON data as a layer on the map
+                L.geoJSON(data, {
+                    style: {
+                        color: "#FF5733",  // Customize color and style as needed
+                        weight: 2,
+                        opacity: 0.8
+                    }
+                }).addTo(map);
+
+                // Adjust map view to fit GeoJSON bounds
+                map.fitBounds(L.geoJSON(data).getBounds());
             })
-            .catch(error => console.log(error));
+            .catch(error => console.error("Error loading GeoJSON:", error));
     </script>
 </body>
 </html>
